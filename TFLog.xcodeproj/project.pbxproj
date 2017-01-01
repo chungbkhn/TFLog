@@ -13,6 +13,7 @@
 		52D6D9EA1BEFFFA4002C0205 /* TFLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6D9961BEFF375002C0205 /* TFLog.swift */; };
 		52D6DA091BF00081002C0205 /* TFLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6D9961BEFF375002C0205 /* TFLog.swift */; };
 		52D6DA261BF00118002C0205 /* TFLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6D9961BEFF375002C0205 /* TFLog.swift */; };
+		638EE52D1E19935A003E051B /* LogLevel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 638EE52C1E19935A003E051B /* LogLevel.swift */; };
 		DD7502861C68FDDC006590AF /* TFLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D6D9971BEFF375002C0205 /* TFLogTests.swift */; };
 		DD7502881C68FEDE006590AF /* TFLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6DA0F1BF000BD002C0205 /* TFLog.framework */; };
 		DD7502921C690C7A006590AF /* TFLog.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D6D9F01BEFFFBE002C0205 /* TFLog.framework */; };
@@ -51,6 +52,7 @@
 		52D6D9E21BEFFF6E002C0205 /* TFLog.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TFLog.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6D9F01BEFFFBE002C0205 /* TFLog.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TFLog.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		52D6DA0F1BF000BD002C0205 /* TFLog.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TFLog.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		638EE52C1E19935A003E051B /* LogLevel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogLevel.swift; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* TFLog.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TFLog.plist; sourceTree = "<group>"; };
 		AD2FAA281CD0B6E100659CF4 /* TFLogTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = TFLogTests.plist; sourceTree = "<group>"; };
 		DD75027A1C68FCFC006590AF /* TFLog-macOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TFLog-macOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,6 +118,7 @@
 		52D6D9721BEFF229002C0205 = {
 			isa = PBXGroup;
 			children = (
+				638EE52C1E19935A003E051B /* LogLevel.swift */,
 				52D6D9961BEFF375002C0205 /* TFLog.swift */,
 				52D6D9971BEFF375002C0205 /* TFLogTests.swift */,
 				52D6D99C1BEFF38C002C0205 /* Configs */,
@@ -330,7 +333,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0810;
-				ORGANIZATIONNAME = "TFLog";
+				ORGANIZATIONNAME = TFLog;
 				TargetAttributes = {
 					52D6D97B1BEFF229002C0205 = {
 						CreatedOnToolsVersion = 7.1;
@@ -443,6 +446,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52D6D9981BEFF375002C0205 /* TFLog.swift in Sources */,
+				638EE52D1E19935A003E051B /* LogLevel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
