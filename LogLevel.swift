@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension Log {
+public extension Log {
 
     enum LogLevel: Int {
         case verbose
