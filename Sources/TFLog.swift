@@ -35,7 +35,10 @@ public class Log {
     // MARK: - Properties
 
     /// MinLogLevel: We don't write any log if minLogLevel = nil
-    fileprivate var minLogLevel: LogLevel? = .debug
+    fileprivate var minLogLevel: LogLevel = .debug
+
+    /// filter what log will be printed.
+    fileprivate var filter: Filter = .all
 
     /**
      Writes the textual representation of `object` and a newline character into the standard output.
@@ -43,21 +46,38 @@ public class Log {
      in the following order of preference: `Streamable`, `Printable`, `DebugPrintable`.
      This function also augments the original function with the filename, function name, and line number of the object that is being logged.
      - parameter object:   A textual representation of the object.
+     - parameter tags:   Write log when filter tags contain at least one element in parametter tags.
      - parameter logLevel:   Only write log when logLevel greater than or equal minLogLevel.
      - parameter file:     Defaults to the name of the file that called log().
      - parameter function: Defaults to the name of the function within the file in which log() was called..
      - parameter line:     Defaults to the line number within the file in which log() was called.
      */
-    fileprivate func write<T>(_ object: T, logLevel: LogLevel, file: String, function: String, line: Int) {
-        guard let minLevel = minLogLevel, minLevel.rawValue > logLevel.rawValue else {
+    fileprivate func write<T>(_ object: T, tags: Set<String>?, logLevel: LogLevel, file: String, function: String, line: Int) {
+        if minLogLevel.rawValue > logLevel.rawValue {
             return
         }
 
-        let fileString = file as NSString
-        let fileLastPathComponent = fileString.lastPathComponent as NSString
-        let fileName = fileLastPathComponent.deletingPathExtension
-        let logIconString = logLevel.iconString()
-        print("\(logIconString) \(fileName).\(function)[\(line)]: \(object)\n", terminator: "")
+        var willWriteLog = false
+        switch filter {
+        case .none:
+            return
+        case .all:
+            willWriteLog = true
+        case .tags(let validTags):
+            if let tags = tags {
+                willWriteLog = validTags.intersection(tags).count > 0
+            } else {
+                willWriteLog = true
+            }
+        }
+
+        if willWriteLog {
+            let fileString = file as NSString
+            let fileLastPathComponent = fileString.lastPathComponent as NSString
+            let fileName = fileLastPathComponent.deletingPathExtension
+            let logIconString = logLevel.iconString()
+            print("\(logIconString) \(fileName).\(function)[\(line)]: \(object)\n", terminator: "")
+        }
     }
 }
 
@@ -66,8 +86,9 @@ public class Log {
 
 public extension Log {
 
-    static func setup(minLogLevel: LogLevel?) {
+    static func setup(minLogLevel: LogLevel, filter: Filter) {
         Log.shared.minLogLevel = minLogLevel
+        Log.shared.filter = filter
     }
 
     /**
@@ -76,12 +97,13 @@ public extension Log {
      in the following order of preference: `Streamable`, `Printable`, `DebugPrintable`.
      This function also augments the original function with the filename, function name, and line number of the object that is being logged.
      - parameter object:   A textual representation of the object.
+     - parameter tags:   Write log when filter tags contain at least one element in parametter tags.
      - parameter file:     Defaults to the name of the file that called log(). Do not override this default.
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func verbose<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, logLevel: .verbose, file: file, function: function, line: line)
+    static func verbose<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, logLevel: .verbose, file: file, function: function, line: line)
     }
 
     /**
@@ -90,12 +112,13 @@ public extension Log {
      in the following order of preference: `Streamable`, `Printable`, `DebugPrintable`.
      This function also augments the original function with the filename, function name, and line number of the object that is being logged.
      - parameter object:   A textual representation of the object.
+     - parameter tags:   Write log when filter tags contain at least one element in parametter tags.
      - parameter file:     Defaults to the name of the file that called log(). Do not override this default.
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func debug<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, logLevel: .debug, file: file, function: function, line: line)
+    static func debug<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, logLevel: .debug, file: file, function: function, line: line)
     }
 
     /**
@@ -104,12 +127,13 @@ public extension Log {
      in the following order of preference: `Streamable`, `Printable`, `DebugPrintable`.
      This function also augments the original function with the filename, function name, and line number of the object that is being logged.
      - parameter object:   A textual representation of the object.
+     - parameter tags:   Write log when filter tags contain at least one element in parametter tags.
      - parameter file:     Defaults to the name of the file that called log(). Do not override this default.
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func info<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, logLevel: .info, file: file, function: function, line: line)
+    static func info<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, logLevel: .info, file: file, function: function, line: line)
     }
 
     /**
@@ -118,12 +142,13 @@ public extension Log {
      in the following order of preference: `Streamable`, `Printable`, `DebugPrintable`.
      This function also augments the original function with the filename, function name, and line number of the object that is being logged.
      - parameter object:   A textual representation of the object.
+     - parameter tags:   Write log when filter tags contain at least one element in parametter tags.
      - parameter file:     Defaults to the name of the file that called log(). Do not override this default.
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func warning<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, logLevel: .warning, file: file, function: function, line: line)
+    static func warning<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, logLevel: .warning, file: file, function: function, line: line)
     }
 
     /**
@@ -132,11 +157,12 @@ public extension Log {
      in the following order of preference: `Streamable`, `Printable`, `DebugPrintable`.
      This function also augments the original function with the filename, function name, and line number of the object that is being logged.
      - parameter object:   A textual representation of the object.
+     - parameter tags:   Write log when filter tags contain at least one element in parametter tags.
      - parameter file:     Defaults to the name of the file that called log(). Do not override this default.
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func error<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, logLevel: .error, file: file, function: function, line: line)
+    static func error<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, logLevel: .error, file: file, function: function, line: line)
     }
 }
