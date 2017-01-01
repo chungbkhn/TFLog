@@ -26,29 +26,6 @@ import Foundation
 
 struct Log {
 
-    enum LogLevel: Int {
-        case verbose
-        case debug
-        case info
-        case warning
-        case error
-
-        func iconString() -> String {
-            switch self {
-            case .verbose:
-                return "🐹"
-            case .debug:
-                return "🐞"
-            case .info:
-                return "😊"
-            case .warning:
-                return "💀"
-            case .error:
-                return "☠"
-            }
-        }
-    }
-
     static func verbose<T>(_ object: T, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
         log(object, logLevel: .verbose, file, function, line)
     }
