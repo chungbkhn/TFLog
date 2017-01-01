@@ -26,6 +26,34 @@ import Foundation
 
 public class Log {
 
+    public enum Level: Int {
+        case verbose
+        case debug
+        case info
+        case warning
+        case error
+
+        func iconString() -> String {
+            switch self {
+            case .verbose:
+                return "🐹"
+            case .debug:
+                return "🐞"
+            case .info:
+                return "😊"
+            case .warning:
+                return "💀"
+            case .error:
+                return "☠"
+            }
+        }
+    }
+
+    public enum Filter {
+        case all
+        case none
+        case tags(Set<String>)
+    }
 
     // MARK: - singleton
 
@@ -35,7 +63,7 @@ public class Log {
     // MARK: - Properties
 
     /// MinLogLevel: We don't write any log if minLogLevel = nil
-    fileprivate var minLogLevel: LogLevel = .debug
+    fileprivate var minLevel: Level = .debug
 
     /// filter what log will be printed.
     fileprivate var filter: Filter = .all
@@ -52,8 +80,8 @@ public class Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called..
      - parameter line:     Defaults to the line number within the file in which log() was called.
      */
-    fileprivate func write<T>(_ object: T, tags: Set<String>?, logLevel: LogLevel, file: String, function: String, line: Int) {
-        if minLogLevel.rawValue > logLevel.rawValue {
+    fileprivate func write<T>(_ object: T, tags: Set<String>?, level: Level, file: String, function: String, line: Int) {
+        if minLevel.rawValue > level.rawValue {
             return
         }
 
@@ -75,7 +103,7 @@ public class Log {
             let fileString = file as NSString
             let fileLastPathComponent = fileString.lastPathComponent as NSString
             let fileName = fileLastPathComponent.deletingPathExtension
-            let logIconString = logLevel.iconString()
+            let logIconString = level.iconString()
             print("\(logIconString) \(fileName).\(function)[\(line)]: \(object)\n", terminator: "")
         }
     }
@@ -86,8 +114,8 @@ public class Log {
 
 public extension Log {
 
-    static func setup(minLogLevel: LogLevel, filter: Filter) {
-        Log.shared.minLogLevel = minLogLevel
+    public static func setup(minLevel: Level, filter: Filter) {
+        Log.shared.minLevel = minLevel
         Log.shared.filter = filter
     }
 
@@ -102,8 +130,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func verbose<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, logLevel: .verbose, file: file, function: function, line: line)
+    public static func verbose<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .verbose, file: file, function: function, line: line)
     }
 
     /**
@@ -117,8 +145,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func debug<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, logLevel: .debug, file: file, function: function, line: line)
+    public static func debug<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .debug, file: file, function: function, line: line)
     }
 
     /**
@@ -132,8 +160,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func info<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, logLevel: .info, file: file, function: function, line: line)
+    public static func info<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .info, file: file, function: function, line: line)
     }
 
     /**
@@ -147,8 +175,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func warning<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, logLevel: .warning, file: file, function: function, line: line)
+    public static func warning<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .warning, file: file, function: function, line: line)
     }
 
     /**
@@ -162,7 +190,7 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    static func error<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, logLevel: .error, file: file, function: function, line: line)
+    public static func error<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .error, file: file, function: function, line: line)
     }
 }
