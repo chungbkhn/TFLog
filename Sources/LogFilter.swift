@@ -6,7 +6,7 @@
 //  Copyright © 2017 TFLog. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 public extension Log {
 
