@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "TFLog"
-  s.version      = "0.2"
+  s.version      = "0.3"
   s.summary      = "Simple log for Swift 3.0+"
   s.description  = <<-DESC
     Simple log for Swift 3.0+.
