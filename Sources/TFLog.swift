@@ -80,7 +80,7 @@ public class Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called..
      - parameter line:     Defaults to the line number within the file in which log() was called.
      */
-    fileprivate func write<T>(_ object: T, tags: Set<String>?, level: Level, file: String, function: String, line: Int) {
+    fileprivate func write<T>(_ object: T, tags: Set<String>?, level: Level, file: String, function: String, line: Int, showExtraInfoes: Bool) {
         if minLevel.rawValue > level.rawValue {
             return
         }
@@ -99,12 +99,16 @@ public class Log {
             }
         }
 
-        if willWriteLog {
-            let fileString = file as NSString
-            let fileLastPathComponent = fileString.lastPathComponent as NSString
-            let fileName = fileLastPathComponent.deletingPathExtension
-            let logIconString = level.iconString()
-            print("\(logIconString) \(fileName).\(function)[\(line)]: \(object)\n", terminator: "")
+        guard willWriteLog else { return }
+
+            if showExtraInfoes {
+                let fileString = file as NSString
+                let fileLastPathComponent = fileString.lastPathComponent as NSString
+                let fileName = fileLastPathComponent.deletingPathExtension
+                let logIconString = level.iconString()
+                print("\(logIconString) \(fileName).\(function)[\(line)]: \(object)\n", terminator: "")
+            } else {
+                print("\(object)\n", terminator: "")
         }
     }
 }
@@ -130,8 +134,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    public static func verbose<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, level: .verbose, file: file, function: function, line: line)
+    public static func verbose<T>(_ object: T, tags: Set<String>? = nil, showExtraInfoes: Bool = true, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .verbose, file: file, function: function, line: line, showExtraInfoes: showExtraInfoes)
     }
 
     /**
@@ -145,8 +149,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    public static func debug<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, level: .debug, file: file, function: function, line: line)
+    public static func debug<T>(_ object: T, tags: Set<String>? = nil, showExtraInfoes: Bool = true, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .debug, file: file, function: function, line: line, showExtraInfoes: showExtraInfoes)
     }
 
     /**
@@ -160,8 +164,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    public static func info<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, level: .info, file: file, function: function, line: line)
+    public static func info<T>(_ object: T, tags: Set<String>? = nil, showExtraInfoes: Bool = true, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .info, file: file, function: function, line: line, showExtraInfoes: showExtraInfoes)
     }
 
     /**
@@ -175,8 +179,8 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    public static func warning<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, level: .warning, file: file, function: function, line: line)
+    public static func warning<T>(_ object: T, tags: Set<String>? = nil, showExtraInfoes: Bool = true, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .warning, file: file, function: function, line: line, showExtraInfoes: showExtraInfoes)
     }
 
     /**
@@ -190,7 +194,7 @@ public extension Log {
      - parameter function: Defaults to the name of the function within the file in which log() was called. Do not override this default.
      - parameter line:     Defaults to the line number within the file in which log() was called. Do not override this default.
      */
-    public static func error<T>(_ object: T, tags: Set<String>? = nil, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
-        Log.shared.write(object, tags: tags, level: .error, file: file, function: function, line: line)
+    public static func error<T>(_ object: T, tags: Set<String>? = nil, showExtraInfoes: Bool = true, _ file: String = #file, _ function: String = #function, _ line: Int = #line) {
+        Log.shared.write(object, tags: tags, level: .error, file: file, function: function, line: line, showExtraInfoes: showExtraInfoes)
     }
 }
